@@ -2,7 +2,7 @@ package com.turbospaces.boot;
 
 import java.util.concurrent.TimeUnit;
 
-// write a method that works like a rate limiter
+// Implement method in allowRequest that will work like a rate limiter based on userId.
 public class Task2 {
     public static void main(String[] args) throws Exception {
         long now = 0; // 00:00

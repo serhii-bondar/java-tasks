@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-// write a method that takes a list of tasks and runs them in parallel
+//  Implement method doInParallel in a way it takes a list of tasks and runs them in parallel.
+//  Print a message in async manner when all tasks are completed.
 public class Task1 {
     public static void main(String[] args) {
         System.out.println("Starting doing in parallel...");
