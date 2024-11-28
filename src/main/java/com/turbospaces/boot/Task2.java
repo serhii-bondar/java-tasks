@@ -18,7 +18,7 @@ public class Task2 {
         String testUser2 = "user43";
 
         sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser1);}, 3);
-        rateLimiter.setNow(now + TimeUnit.SECONDS.toMillis(58));  // 00:59
+        rateLimiter.setNow(now + TimeUnit.SECONDS.toMillis(58));  // 00:58
         sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser1);}, 2);
         sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser2);}, 4);
         sendRequestsInParallel(() -> {assert !rateLimiter.allowRequest(testUser1);}, 5);
