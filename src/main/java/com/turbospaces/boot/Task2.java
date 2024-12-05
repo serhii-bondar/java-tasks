@@ -1,6 +1,7 @@
 package com.turbospaces.boot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,31 +18,43 @@ public class Task2 {
         String testUser1 = "user42";
         String testUser2 = "user43";
 
-        sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser1);}, 3);
+        sendRequestsInParallel(() -> assertTrue(rateLimiter.allowRequest(testUser1)), 3);
         rateLimiter.setNow(now + TimeUnit.SECONDS.toMillis(58));  // 00:58
-        sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser1);}, 2);
-        sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser2);}, 4);
-        sendRequestsInParallel(() -> {assert !rateLimiter.allowRequest(testUser1);}, 5);
+        sendRequestsInParallel(() -> assertTrue(rateLimiter.allowRequest(testUser1)), 2);
+        sendRequestsInParallel(() -> assertTrue(rateLimiter.allowRequest(testUser2)), 4);
+        sendRequestsInParallel(() -> assertFalse(rateLimiter.allowRequest(testUser1)), 5);
 
         // minute passed new request should be allowed
         rateLimiter.setNow(rateLimiter.currentTimestamp + TimeUnit.SECONDS.toMillis(61)); // 01:59
-        sendRequestsInParallel(() -> {assert rateLimiter.allowRequest(testUser1);}, 5);
+        sendRequestsInParallel(() -> assertTrue(rateLimiter.allowRequest(testUser1)), 5);
 
         // another minute passed, allow but ...
         rateLimiter.setNow(now + TimeUnit.SECONDS.toMillis(5)); // 02:05
-        sendRequestsInParallel(() -> {assert !rateLimiter.allowRequest(testUser1);}, 5);
+        sendRequestsInParallel(() -> assertFalse(rateLimiter.allowRequest(testUser1)), 5);
 
         WORKER.shutdown();
         System.out.println("All tests passed");
     }
 
     public static void sendRequestsInParallel(Runnable request, int times) throws Exception {
-        var results = new ArrayList<Future>();
+        List<Future> results = new ArrayList<Future>();
         for (int i = 0; i < times; i++) {
             results.add(WORKER.submit(request));
         }
         for (Future result : results) {
             result.get();
+        }
+    }
+
+    public static void assertTrue(boolean res) {
+        if (!res) {
+            throw new RuntimeException("Assertion failed, expected true");
+        }
+    }
+
+    public static void assertFalse(boolean res) {
+        if (res) {
+            throw new RuntimeException("Assertion failed, expected false");
         }
     }
 
