@@ -62,8 +62,8 @@ public class Task2 {
         public long currentTimestamp;
         public int limitPerMinute;
 
-        public RateLimiter(int limitPerSecond, long now) {
-            this.limitPerMinute = limitPerSecond;
+        public RateLimiter(int limitPerMinute, long now) {
+            this.limitPerMinute = limitPerMinute;
             this.currentTimestamp = now;
         }
 
